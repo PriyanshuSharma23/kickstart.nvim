@@ -28,7 +28,13 @@ require('lazy').setup({
   'tpope/vim-rhubarb',
 
   'sbdchd/neoformat',
-  'ThePrimeagen/harpoon',
+  {
+    'ThePrimeagen/harpoon',
+    branch = "harpoon2",
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    }
+  },
 
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
@@ -272,6 +278,19 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnos
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
+-- Harpoon keybinds
+local harpoon = require("harpoon")
+-- REQUIRED
+harpoon:setup()
+
+-- REQUIRED
+vim.keymap.set("n", "<leader>ha", function() harpoon:list():append() end)
+vim.keymap.set("n", "<leader>hm", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+vim.keymap.set("n", "<leader>h1", function() harpoon:list():select(1) end)
+vim.keymap.set("n", "<leader>h2", function() harpoon:list():select(2) end)
+vim.keymap.set("n", "<leader>h3", function() harpoon:list():select(3) end)
+vim.keymap.set("n", "<leader>h4", function() harpoon:list():select(4) end)
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
@@ -494,9 +513,6 @@ require('which-key').register {
   --   ["3"] = { "<cmd> lua require('harpoon.ui').nav_file(3)<cr>", "file 3" },
   -- }
 }
-
-vim.keymap.set("n", "<leader>af", require("harpoon.mark").add_file, { desc = "[A]dd [f]ile (harpoon)" });
-vim.keymap.set("n", "<C-e>", require("harpoon.ui").toggle_quick_menu, { desc = "Toggle quick menu (harpoon)" });
 
 -- mason-lspconfig requires that these setup functions are called in this order
 -- before setting up the servers.
