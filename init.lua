@@ -113,24 +113,24 @@ require('lazy').setup({
     },
   },
 
-  -- {
-  --   -- Theme inspired by Atom
-  --   'navarasu/onedark.nvim',
-  --   priority = 1000,
-  --   config = function()
-  --     vim.cmd.colorscheme 'onedark'
-  --   end,
-  -- },
-
   {
-    "catppuccin/nvim",
-    name = "catppuccin",
+    -- Theme inspired by Atom
+    'navarasu/onedark.nvim',
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'catppuccin'
-    end
-
+      vim.cmd.colorscheme 'onedark'
+    end,
   },
+
+  -- {
+  --   "catppuccin/nvim",
+  --   name = "catppuccin",
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd.colorscheme 'catppuccin'
+  --   end
+  --
+  -- },
 
   {
     -- Set lualine as statusline
@@ -139,7 +139,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'catppuccin',
+        theme = 'onedark',
         -- theme = 'onedark',
         component_separators = '|',
         section_separators = '',
@@ -198,6 +198,40 @@ require('lazy').setup({
       vim.g.mkdp_filetypes = { "markdown" }
     end,
     ft = { "markdown" },
+  },
+  {
+    "nvim-tree/nvim-tree.lua",
+    init = function()
+      -- disable netrw at the very start of your init.lua
+      vim.g.loaded_netrw = 1
+      vim.g.loaded_netrwPlugin = 1
+
+      -- set termguicolors to enable highlight groups
+      vim.opt.termguicolors = true
+
+      -- empty setup using defaults
+      require("nvim-tree").setup()
+
+      -- OR setup with some options
+      require("nvim-tree").setup({
+        sort = {
+          sorter = "case_sensitive",
+        },
+        view = {
+          width = 30,
+        },
+        renderer = {
+          group_empty = true,
+        },
+        filters = {
+          dotfiles = true,
+        },
+      })
+    end
+  },
+
+  {
+    [[nvim-tree/nvim-web-devicons]]
   },
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
@@ -271,7 +305,7 @@ vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
 -- [[ Basic Keymaps ]]
 
 -- newtrw
-vim.keymap.set({ 'n' }, '<leader>pv', vim.cmd.Ex, { desc = 'Open netrw file explorer' })
+vim.keymap.set({ 'n' }, '<leader>pv', vim.cmd.NvimTreeToggle, { desc = 'Open file explorer' })
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -604,7 +638,7 @@ cmp.setup {
     ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete {},
+    ['<C-y>'] = cmp.mapping.complete {},
     ['<CR>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
