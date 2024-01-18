@@ -199,41 +199,6 @@ require('lazy').setup({
     end,
     ft = { "markdown" },
   },
-  {
-    "nvim-tree/nvim-tree.lua",
-    init = function()
-      -- disable netrw at the very start of your init.lua
-      vim.g.loaded_netrw = 1
-      vim.g.loaded_netrwPlugin = 1
-
-      -- set termguicolors to enable highlight groups
-      vim.opt.termguicolors = true
-
-      -- empty setup using defaults
-      require("nvim-tree").setup()
-
-      -- OR setup with some options
-      require("nvim-tree").setup({
-        sort = {
-          sorter = "case_sensitive",
-        },
-        view = {
-          width = 30,
-        },
-        renderer = {
-          group_empty = true,
-        },
-        filters = {
-          dotfiles = true,
-        },
-      })
-    end
-  },
-
-  {
-    [[nvim-tree/nvim-web-devicons]]
-  },
-
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -305,7 +270,7 @@ vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
 -- [[ Basic Keymaps ]]
 
 -- newtrw
-vim.keymap.set({ 'n' }, '<leader>pv', vim.cmd.NvimTreeToggle, { desc = 'Open file explorer' })
+vim.keymap.set({ 'n' }, '<leader>pv', vim.cmd.Ex, { desc = 'Open file explorer' })
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -602,8 +567,22 @@ capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 -- Ensure the servers above are installed
 local mason_lspconfig = require 'mason-lspconfig'
 
+local merge_tables = function(table1, table2)
+  for k, v in ipairs(table2) do
+    table.insert(table1, v)
+  end
+
+  return table1
+end
+
 mason_lspconfig.setup {
-  ensure_installed = vim.tbl_keys(servers),
+  ensure_installed = merge_tables(vim.tbl_keys(servers), {
+    "prismals",
+    "emmet_language_server",
+    "gopls",
+    "pyright",
+    "tailwindcss",
+  })
 }
 
 mason_lspconfig.setup_handlers {
@@ -638,7 +617,7 @@ cmp.setup {
     ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-y>'] = cmp.mapping.complete {},
+    ['<C-space>'] = cmp.mapping.complete {},
     ['<CR>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
